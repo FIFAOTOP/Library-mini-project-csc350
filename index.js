@@ -64,3 +64,12 @@ app.delete('/books', function (req, res, next) {
     }
   );
 })
+
+app.get('/users', function (req, res, next) {
+  connection.query(
+    'SELECT * FROM `users`',
+    function(err, results, fields) {
+      res.json(results);
+    }
+  );
+})
