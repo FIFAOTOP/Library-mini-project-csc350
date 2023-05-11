@@ -121,10 +121,11 @@ app.post('/users/registry', function (req, res, next) {
   let fName    = req.body.fName;
   let lName    = req.body.lName;
   let amount   = 5000;
+  let role     = 'user';
   // Ensure the input fields exists and are not empty
   if (username && password && fName && lName) {
     // Execute SQL query that'll select the account from the database based on the specified username and password
-    connection.query('INSERT INTO `users`(`fname`, `lname`, `username`, `password`, `amount_money`) VALUES (?, ?, ?, ?, ?)', [fName, lName, username, password, amount], function(error, results, fields) {
+    connection.query('INSERT INTO `users`(`fname`, `lname`, `username`, `password`, `amount_money`, `role`) VALUES (?, ?, ?, ?, ?, ?)', [fName, lName, username, password, amount, role], function(error, results, fields) {
       // If there is an issue with the query, output the error
       if (error) throw error;
       // If the account exists
