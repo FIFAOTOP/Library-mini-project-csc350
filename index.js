@@ -54,10 +54,11 @@ app.put('/concert/decreas', function (req, res, next) {
   );
 })
 
-app.delete('/concert', function (req, res, next) {
+app.delete('/concert/:id', function (req, res, next) {
+  const id = req.params.id;
   connection.query(
     'DELETE FROM `list_concert` WHERE id = ?',
-    [req.body.id],
+    [id],
     function(err, results) {
       res.json(results);
     }
@@ -113,13 +114,46 @@ app.post('/users', function(request, response) {
   }
 });
 
+app.post('/users/registry', function (req, res, next) {
+  // Capture the input fields
+  let username = req.body.username;
+  let password = req.body.password;
+  let fName    = req.body.fName;
+  let lName    = req.body.lName;
+  let amount   = 5000;
+  // Ensure the input fields exists and are not empty
+  if (username && password && fName && lName) {
+    // Execute SQL query that'll select the account from the database based on the specified username and password
+    connection.query('INSERT INTO `users`(`fname`, `lname`, `username`, `password`, `amount_money`) VALUES (?, ?, ?, ?, ?)', [fName, lName, username, password, amount], function(error, results, fields) {
+      // If there is an issue with the query, output the error
+      if (error) throw error;
+      // If the account exists
+      res.send("success");
+      res.end();
+    });
+  } else {
+    res.send('Please enter information!');
+    res.end();
+  }
+})
+
 app.get('/users/:id/lists', function (req, res, next) {
   const id = req.params.id;
-  connection.query(
-    'SELECT * FROM `buy_tickets_trans` WHERE `user_id` = ?',
-    [id],
-    function(err, results) {
-      res.send(results);
-    }
-  );
+  if(id==0){
+    connection.query(
+      'SELECT * FROM `buy_tickets_trans`',
+      function(err, results) {
+        res.send(results);
+      }
+    );
+  }else{
+    connection.query(
+      'SELECT * FROM `buy_tickets_trans` WHERE `user_id` = ?',
+      [id],
+      function(err, results) {
+        res.send(results);
+      }
+    );
+  }
+
 })
